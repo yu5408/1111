@@ -24,6 +24,16 @@ jobs:
         sudo apt-get install -y fakeroot ssh clang build-essential
         sudo apt-get install -y libssl-dev libxml2-dev
 
+    - name: Install toolchain
+      run: |
+        cd $THEOS/toolchain
+        mkdir -p linux/iphone
+        cd linux/iphone
+        wget -q https://github.com/CRKokushurin/theos-toolchain-linux-x86_64/archive/refs/heads/main.tar.gz
+        tar xzf main.tar.gz
+        mv theos-toolchain-linux-x86_64-main/* .
+        rm -rf theos-toolchain-linux-x86_64-main main.tar.gz
+
     - name: Download iOS SDK
       run: |
         mkdir -p $THEOS/sdks
