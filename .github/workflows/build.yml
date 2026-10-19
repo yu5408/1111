@@ -7,41 +7,40 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
 
-    - name: Setup Theos
+    - name: Install Theos
       run: |
-        git clone --recursive https://github.com/theos/theos.git $HOME/theos
-        echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+        export THEOS=/opt/theos
+        git clone --recursive https://github.com/theos/theos.git $THEOS
+        echo "THEOS=$THEOS" >> $GITHUB_ENV
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y fakeroot ssh clang build-essential
+        sudo apt-get install -y fakeroot git make perl gcc
         sudo apt-get install -y libssl-dev libxml2-dev
 
-    - name: Install toolchain
+    - name: Install iOS toolchain
       run: |
         cd $THEOS/toolchain
         mkdir -p linux/iphone
         cd linux/iphone
-        wget -q https://github.com/CRKokushurin/theos-toolchain-linux-x86_64/archive/refs/heads/main.tar.gz
-        tar xzf main.tar.gz
-        mv theos-toolchain-linux-x86_64-main/* .
-        rm -rf theos-toolchain-linux-x86_64-main main.tar.gz
+        wget -q https://github.com/ProcursusTeam/procursus/releases/download/2023.07.18_ios-toolchain/ios-toolchain_linux-x86_64.tar.xz
+        tar xJf ios-toolchain_linux-x86_64.tar.xz
+        rm ios-toolchain_linux-x86_64.tar.xz
 
-    - name: Download iOS SDK
+    - name: Install iOS SDK
       run: |
         mkdir -p $THEOS/sdks
         cd $THEOS/sdks
-        wget -q https://github.com/theos/sdks/archive/refs/heads/master.tar.gz
-        tar xzf master.tar.gz
-        mv sdks-master/iPhoneOS14.5.sdk .
-        rm -rf sdks-master master.tar.gz
+        wget -q https://github.com/xybp888/iOS-SDKs/raw/master/iPhoneOS14.0.sdk.tar.gz
+        tar xzf iPhoneOS14.0.sdk.tar.gz
+        rm iPhoneOS14.0.sdk.tar.gz
 
     - name: Build
       run: |
@@ -49,7 +48,7 @@ jobs:
         make package FINAL=yes
 
     - name: Upload dylib
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v2
       with:
         name: ChinaMobileAdBlock-dylib
         path: |
