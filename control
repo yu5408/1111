@@ -1,0 +1,10 @@
+Package: com.custom.chinamobileadblock
+Name: ChinaMobileAdBlock
+Version: 1.0.0
+Architecture: iphoneos-arm64
+Description: 中国移动APP 开屏广告深度去除插件
+Maintainer: Custom Developer
+Author: Custom Developer
+Section: Tweaks
+Depends: mobilesubstrate
+Tag: role::developer
