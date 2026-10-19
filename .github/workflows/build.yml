@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     steps:
     - name: Checkout code
@@ -21,15 +21,17 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y fakeroot ssh clang
+        sudo apt-get install -y fakeroot ssh clang build-essential
         sudo apt-get install -y libssl-dev libxml2-dev
 
     - name: Download iOS SDK
       run: |
+        mkdir -p $THEOS/sdks
         cd $THEOS/sdks
-        wget -q https://github.com/xybp888/iOS-SDKs/raw/master/iPhoneOS14.0.sdk.tar.gz
-        tar xzf iPhoneOS14.0.sdk.tar.gz
-        rm iPhoneOS14.0.sdk.tar.gz
+        wget -q https://github.com/theos/sdks/archive/refs/heads/master.tar.gz
+        tar xzf master.tar.gz
+        mv sdks-master/iPhoneOS14.5.sdk .
+        rm -rf sdks-master master.tar.gz
 
     - name: Build
       run: |
